@@ -109,37 +109,35 @@ Statique
     '/oauth2callback': function(req, res) {
       var url = req.url;
 
-      if (url.indexOf('error') !== -1) {
-        return res.end('Error.');
+      if (url.indexOf("error") !== -1) {
+        return res.end("Error.");
       }
 
-      if (url.indexOf('?code=') === -1) {
-        return res.end('Invalid request.');
+      if (url.indexOf("?code=") === -1) {
+        return res.end("Invalid request.");
       }
 
       var code = url;
-      code = code.substring(code.indexOf('?code=') + 6);
+      code = code.substring(code.indexOf("?code=") + 6);
 
       if (!code) {
-        return res.end('Code is missing.');
+        return res.end("Code is missing.");
       }
 
-      var formData = 'code=' + code +
-        '&client_id=' + credentials.client_id +
-        '&client_secret=' + credentials.client_secret +
-        '&redirect_uri=' + credentials.redirect_uri +
-        '&grant_type=authorization_code';
+      var formData = "code=" + code +
+        "&client_id=" + credentials.client_id +
+        "&client_secret=" + credentials.client_secret +
+        "&redirect_uri=" + credentials.redirect_uri +
+        "&grant_type=authorization_code";
 
       var options = {
-        url: 'https://accounts.google.com/o/oauth2/token',
+        url: "https://accounts.google.com/o/oauth2/token",
         headers: {
-          'content-type': 'application/x-www-form-urlencoded'
+          "content-type": "application/x-www-form-urlencoded"
         },
-        method: 'POST',
+        method: "POST",
         body: formData
       };
-
-      console.log(options);
 
       Request(options, function(err, response, body) {
         if (err) {
@@ -149,9 +147,8 @@ Statique
         try {
           body = JSON.parse(body);
         } catch (e) {
-          return res.end(e.message + ' :: ' + body);
+          return res.end(e.message + " :: " + body);
         }
-
         if (body.error) {
           return res.end(err || body.error);
         }
@@ -159,14 +156,18 @@ Statique
         // success
         if (body.access_token) {
           ACCESS_TOKEN = body.access_token;
-
           Youtube.authenticate({
-            type: 'oauth',
+            type: "oauth",
             token: ACCESS_TOKEN
           });
+
+          res.writeHead(302, {
+            "Location": "/"
+          });
+          res.end();
         }
 
-        return res.end('Something wrong: \n' + JSON.stringify(body, null, 4));
+        return res.end("Something wrong: \n" + JSON.stringify(body, null, 4));
       });
     }
   });
