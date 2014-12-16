@@ -1,168 +1,175 @@
 // Dependencies
-var Youtube = require("youtube-api")
-  , Http = require("http")
-  , Statique = require ("statique")
-  , Http = require("http")
-  , Request = require("request")
-  , credentials = require("./credentials")
-  , path = require("path")
-  ;
+var Youtube = require('youtube-api'),
+  Http = require('http'),
+  Statique = require('statique'),
+  Http = require('http'),
+  Request = require('request'),
+  credentials = require('./credentials'),
+  path = require('path');
 
 // Set ACCESS_TOKEN global as undefined
 global.ACCESS_TOKEN = undefined;
 
 // Credentials
-credentials.scope = "https://www.googleapis.com/auth/youtube";
-credentials.response_type = "code";
-credentials.access_type = "offline";
+credentials.scope = 'https://www.googleapis.com/auth/youtube';
+credentials.response_type = 'code';
+credentials.access_type = 'offline';
 
 // statique config
 Statique
-    .server({root: __dirname + "/public"})
-    .setRoutes({
-        "/": function rootPage(req, res) {
+  .server({
+    root: __dirname + '/public'
+  })
+  .setRoutes({
+    '/': function rootPage(req, res) {
+      var authType = credentials.auth_uri ? 'oauth' : 'jwt';
 
-            var authType = credentials.auth_uri ? "oauth" : "jwt";
+      // Handle JWT authentication
+      if (authType === 'jwt' && !ACCESS_TOKEN) {
+        ACCESS_TOKEN = true;
 
-            // Handle JWT authentication
-            if (authType === "jwt" && !ACCESS_TOKEN) {
-                ACCESS_TOKEN = true;
-                return Youtube.authenticate({
-                    type: "jwt"
-                  , email: credentials.email
-                  , keyFile: path.normalize(credentials.keyFile)
-                  , key: credentials.key
-                  , subject: credentials.subject
-                  , scopes: [credentials.scope]
-                }).authorize(function (err, data) {
-                    if (err) { return Statique.error(req, res, 500, err.toString()); }
-                    rootPage(req, res);
-                });
-            }
+        return Youtube.authenticate({
+          type: 'jwt',
+          email: credentials.email,
+          keyFile: path.normalize(credentials.keyFile),
+          key: credentials.key,
+          subject: credentials.subject,
+          scopes: [credentials.scope]
+        }).authorize(function(err, data) {
+          if (err) {
+            return Statique.error(req, res, 500, err.toString());
+          }
 
-            if (ACCESS_TOKEN) {
-                return Statique.readFile("/html/index.html", function (err, content) {
-                    Statique.sendRes(res, 400, "text/html", content);
-                });
-            }
+          rootPage(req, res);
+        });
+      }
 
-            var authUrl = "https://accounts.google.com/o/oauth2/auth?";
+      if (ACCESS_TOKEN) {
+        return Statique.readFile('/html/index.html', function(err, content) {
+          Statique.sendRes(res, 400, 'text/html', content);
+        });
+      }
 
-            for (var key in credentials) {
-                console.log(key, credentials[key]);
-                if (key === "client_secret") { continue; }
+      var authUrl = 'https://accounts.google.com/o/oauth2/auth?';
 
-                authUrl += "&" + key + "=" + credentials[key];
-            }
+      for (var key in credentials) {
+        // console.log(key, credentials[key]);
 
-            res.writeHead(302, {
-                "Location": authUrl
-            });
-            res.end();
-            return;
+        if (key === 'client_secret') {
+          continue;
         }
-      , "/api/run_code": function (req, res) {
 
-            var formData = ""
-              , error = ""
-              ;
+        authUrl += '&' + key + '=' + credentials[key];
+      }
 
-            req.on("data", function (data) {
-                formData += data;
-            });
+      res.writeHead(302, {
+        'Location': authUrl
+      });
 
-            req.on("error", function (data) {
-                error += data;
-            });
+      res.end();
 
-            req.on("end", function (data) {
+      return;
+    },
 
-                if (error) {
-                    return Statique.sendRes(res, 400, "text/html", error);
-                }
+    '/api/upload_video': function(req, res) {
+      console.log('ACCESS_TOKEN: ', ACCESS_TOKEN);
 
-                global.__api_run_code_callback = function (err, data) {
-                    if (err) {
-                        return Statique.sendRes(res, 400, "text", JSON.stringify(err));
-                    }
-                    return Statique.sendRes(res, 200, "text/json", JSON.stringify(data, null, 2));
-                };
+// console.log(req);
 
-                formData = formData.replace(/_CALLBACK/g, "__api_run_code_callback");
-                try {
-                    eval(formData);
-                } catch (e) {
-                    return Statique.sendRes(res, 400, "text", e.message);
-                }
-            });
+      console.log('UPLOADING VIDEO...');
+
+Request(req.url, function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    console.log(body); // Print the google web page.
+  }
+});
+
+      var ResumableUpload = require('node-youtube-resumable-upload');
+      var resumableUpload = new ResumableUpload(); //create new ResumableUpload
+      resumableUpload.tokens = { access_token: ACCESS_TOKEN };
+      resumableUpload.filepath = './test-vid.mp4';
+
+      // resumableUpload.metadata = req.snippet;
+
+      resumableUpload.monitor = true;
+      resumableUpload.retry = -1; //infinite retries, change to desired amount
+      resumableUpload.eventEmitter.on('progress', function(progress) {
+        console.log('Progress: ', progress);
+      });
+      resumableUpload.initUpload(function(result) {
+        console.log('Result: ', result);
+        return;
+      }, function(error) {
+        console.log('Upload failed: ');
+        console.log(JSON.stringify(error));
+      });
+
+    },
+
+    '/oauth2callback': function(req, res) {
+      var url = req.url;
+
+      if (url.indexOf('error') !== -1) {
+        return res.end('Error.');
+      }
+
+      if (url.indexOf('?code=') === -1) {
+        return res.end('Invalid request.');
+      }
+
+      var code = url;
+      code = code.substring(code.indexOf('?code=') + 6);
+
+      if (!code) {
+        return res.end('Code is missing.');
+      }
+
+      var formData = 'code=' + code +
+        '&client_id=' + credentials.client_id +
+        '&client_secret=' + credentials.client_secret +
+        '&redirect_uri=' + credentials.redirect_uri +
+        '&grant_type=authorization_code';
+
+      var options = {
+        url: 'https://accounts.google.com/o/oauth2/token',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        method: 'POST',
+        body: formData
+      };
+
+      Request(options, function(err, response, body) {
+        if (err) {
+          return res.end(err);
         }
-      , "/oauth2callback": function (req, res) {
-            var url = req.url;
 
-            if (url.indexOf("error") !== -1) {
-                return res.end("Error.");
-            }
-
-            if (url.indexOf("?code=") === -1) {
-                return res.end("Invalid request.");
-            }
-
-            var code = url;
-            code = code.substring(code.indexOf("?code=") + 6);
-
-            if (!code) {
-                return res.end("Code is missing.");
-            }
-
-            var formData = "code=" + code +
-                           "&client_id=" + credentials.client_id +
-                           "&client_secret=" + credentials.client_secret +
-                           "&redirect_uri=" + credentials.redirect_uri +
-                           "&grant_type=authorization_code";
-
-            var options = {
-                url: "https://accounts.google.com/o/oauth2/token",
-                headers: {"content-type" : "application/x-www-form-urlencoded"},
-                method: "POST",
-                body: formData
-            };
-
-            Request(options, function (err, response, body) {
-
-                if (err) {
-                    return res.end(err);
-                }
-
-                try {
-                    body = JSON.parse(body);
-                } catch (e) {
-                    return res.end(e.message + " :: " + body);
-                }
-                if (body.error) {
-                    return res.end(err || body.error);
-                }
-
-                // success
-                if (body.access_token) {
-                    ACCESS_TOKEN = body.access_token;
-                    Youtube.authenticate({
-                        type: "oauth",
-                        token: ACCESS_TOKEN
-                    });
-
-                    res.writeHead(302, {
-                        "Location": "/"
-                    });
-                    res.end();
-                }
-
-                return res.end("Something wrong: \n" + JSON.stringify(body, null, 4));
-            });
+        try {
+          body = JSON.parse(body);
+        } catch (e) {
+          return res.end(e.message + ' :: ' + body);
         }
-    })
-  ;
+
+        if (body.error) {
+          return res.end(err || body.error);
+        }
+
+        // success
+        if (body.access_token) {
+          ACCESS_TOKEN = body.access_token;
+
+          Youtube.authenticate({
+            type: 'oauth',
+            token: ACCESS_TOKEN
+          });
+        }
+
+        return res.end('Something wrong: \n' + JSON.stringify(body, null, 4));
+      });
+    }
+  });
+
 
 // Create server
 Http.createServer(Statique.serve).listen(5000);
-console.log("Open: http://localhost:5000");
-
+console.log('Open: http://localhost:5000');

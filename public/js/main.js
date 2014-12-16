@@ -1,63 +1,57 @@
-window.addEventListener("load", function () {
-    var editor = ace.edit("editor");
-    var session = editor.getSession();
+$(function() {
 
-    var responseEditor = ace.edit("response-editor");
-    var responseEditorSession = responseEditor.getSession();
-
-    /**
-     * runCode
-     * The function that sends the code to the server side and waits for the response.
-     *
-     * @name runCode
-     * @function
-     * @param {String} code The code that is passed on the server side via HTTP request.
-     * @param {Function} callback The callback function that is called after the response comes.
-     * @return {XMLHttpRequest} The XHR that is made.
-     */
-    function runCode (code, callback) {
-        var xhr = new XMLHttpRequest();
-        var url = "/api/run_code";
-
-        xhr.open("post", url);
-        xhr.setRequestHeader("content-type", "text/json; charset=utf-8");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== 4) { return; }
-            var err = xhr.status < 400 ? null : (xhr.responseText || "ERR");
-            callback(err, xhr.responseText);
-        };
-
-        // send data
-        xhr.send(code);
+  var jsonObj = {
+    "type": "transcode",
+    "name": "JW Video test 3",
+    "description": "6 second test vid",
+    "transcodeProfile": 21,
+    "properties": ['tag1', 'tags2', 'test tag'], //[3, 8, 9, 2, 7],
+    "fields": {
+      "Description": "Test description",
+      "customField": "This is a test value for a custom metadata field",
+      "custom 8": "Another custom field bam!"
     }
+  };
 
-    //setup editor
-    editor.setTheme("ace/theme/textmate");
-    editor.setFontSize(13);
-    session.setMode("ace/mode/javascript");
+  var metadata = {};
 
-    // response editor
-    responseEditor.setTheme("ace/theme/textmate");
-    responseEditor.setFontSize(13);
-    responseEditorSession.setMode("ace/mode/json");
+  function metadataMap(value) {
+    return jsonObj[value];
+  }
 
-    // auto-complete
-    ace.require("ace/ext/language_tools");
-    editor.setOptions({
-        enableBasicAutocompletion: true,
-    });
+  document.querySelectorAll('.upload-video-btn')[0].addEventListener('click', function(e) {
+    e.preventDefault();
 
-    editor.commands.on("afterExec", function(e){
-        console.log(e.args);
-         if (e.command.name == "insertstring"&& e.args === ".") {
-             editor.execCommand("startAutocomplete")
-         }
-    });
+      console.log(metadataMap($('#title').val()));
+      console.log(metadataMap($('#description').val()));
+      console.log(metadataMap($('#tags').val()));
 
-    // click handler
-    document.querySelectorAll(".run-code-btn")[0].addEventListener("click", function () {
-        runCode(editor.getValue(), function(err, data) {
-            responseEditor.setValue(err || data, -1);
-        });
-    });
+      metadata = {
+        snippet: {
+          title: metadataMap($('#title').val()),
+          description: metadataMap($('#description').val()),
+          tags: metadataMap($('#tags').val())
+        },
+        status: {
+          privacyStatus: 'private'
+        }
+      };
+
+      $.ajax({
+        url: '/api/upload_video',
+        data: {
+          snippet: {
+            title: metadataMap($('#title').val()),
+            description: metadataMap($('#description').val()),
+            tags: metadataMap($('#tags').val())
+          },
+          status: {
+            privacyStatus: 'private'
+          }
+        },
+        type: 'POST'
+      }).done(function(resp) {
+        console.log(resp);
+      });
+  });
 });

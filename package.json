@@ -1,16 +1,17 @@
 {
-  "name": "test-youtube-api",
-  "version": "0.2.0",
+  "name": "youtube-upload",
+  "version": "0.1.0",
   "description": "Test Youtube API NodeJS module",
-  "author": "Ionică Bizău",
+  "author": "Jared Williams",
   "contributors": [
-    "Ionică Bizău <bizauionica@gmail.com>",
-    "Fernando Derkoski <brilvio@gmail.com>"
+    "Jared Williams"
   ],
   "main": "index.js",
   "dependencies": {
     "request": "^2.36.0",
     "youtube-api": "^0.3.0",
+    "google-auth-cli": "0.0.1",
+    "googleapis": "^0.7.0",
     "statique": "^0.3.0"
   },
   "devDependencies": {},
