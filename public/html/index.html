@@ -36,20 +36,23 @@ th {
   <fieldset>
     <h2>Metadata Mapping</h2>
 
+    <!-- The select menus would be populated by getting the values from the object in the manifest file and the labels would be populated by a set of metadata fields that we will allow you to map data to in youtube -->
     <table>
       <tr>
         <th>Youtube fields</th>
+        <th>&gt;</th>
         <th>Mapping</th>
       </tr>
       <tr>
         <td>
           <label class="control-label" for="title">Title</label>
         </td>
+        <td>&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
               <select id="title" name="title" class="input-xlarge">
-                <option>name</option>
+                <option selected>name</option>
                 <option>description</option>
                 <option>properties</option>
                 <option>Description</option>
@@ -64,12 +67,13 @@ th {
         <td>
           <label class="control-label" for="description">Description</label>
         </td>
+        <td>&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
               <select id="description" name="description" class="input-xlarge">
                 <option>name</option>
-                <option>description</option>
+                <option selected>description</option>
                 <option>properties</option>
                 <option>Description</option>
                 <option>customField</option>
@@ -83,13 +87,14 @@ th {
         <td>
           <label class="control-label" for="tags">Tags</label>
         </td>
+        <td>&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
               <select id="tags" name="tags" class="input-xlarge">
                 <option>name</option>
                 <option>description</option>
-                <option>properties</option>
+                <option selected>properties</option>
                 <option>Description</option>
                 <option>customField</option>
                 <option>custom 8</option>

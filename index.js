@@ -71,37 +71,37 @@ Statique
       return;
     },
 
-    '/api/upload_video': function(req, res) {
+    '/api/upload_video': function(req, res, form) {
       console.log('ACCESS_TOKEN: ', ACCESS_TOKEN);
+      var metadata = {};
 
-// console.log(req);
+      form.on("done", function (form) {
+        // console.log(JSON.parse(form.data));
+        metadata = JSON.parse(form.data);
+        // console.log(metadata);
 
-      console.log('UPLOADING VIDEO...');
+        console.log('UPLOADING VIDEO...');
 
-Request(req.url, function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    console.log(body); // Print the google web page.
-  }
-});
 
-      var ResumableUpload = require('node-youtube-resumable-upload');
-      var resumableUpload = new ResumableUpload(); //create new ResumableUpload
-      resumableUpload.tokens = { access_token: ACCESS_TOKEN };
-      resumableUpload.filepath = './test-vid.mp4';
+        var ResumableUpload = require('node-youtube-resumable-upload');
+        var resumableUpload = new ResumableUpload(); //create new ResumableUpload
+        resumableUpload.tokens = { access_token: ACCESS_TOKEN };
+        resumableUpload.filepath = './test-vid.mp4';
 
-      // resumableUpload.metadata = req.snippet;
+        resumableUpload.metadata = metadata;
 
-      resumableUpload.monitor = true;
-      resumableUpload.retry = -1; //infinite retries, change to desired amount
-      resumableUpload.eventEmitter.on('progress', function(progress) {
-        console.log('Progress: ', progress);
-      });
-      resumableUpload.initUpload(function(result) {
-        console.log('Result: ', result);
-        return;
-      }, function(error) {
-        console.log('Upload failed: ');
-        console.log(JSON.stringify(error));
+        resumableUpload.monitor = true;
+        resumableUpload.retry = -1; //infinite retries, change to desired amount
+        resumableUpload.eventEmitter.on('progress', function(progress) {
+          console.log('Progress: ', progress);
+        });
+        resumableUpload.initUpload(function(result) {
+          console.log('Result: ', result);
+          return;
+        }, function(error) {
+          console.log('Upload failed: ');
+          console.log(JSON.stringify(error));
+        });
       });
 
     },
@@ -138,6 +138,8 @@ Request(req.url, function (error, response, body) {
         method: 'POST',
         body: formData
       };
+
+      console.log(options);
 
       Request(options, function(err, response, body) {
         if (err) {

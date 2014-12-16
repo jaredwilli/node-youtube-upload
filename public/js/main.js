@@ -1,5 +1,6 @@
 $(function() {
 
+  // This is something that would have to come from the backend, in the PHP
   var jsonObj = {
     "type": "transcode",
     "name": "JW Video test 3",
@@ -22,36 +23,23 @@ $(function() {
   document.querySelectorAll('.upload-video-btn')[0].addEventListener('click', function(e) {
     e.preventDefault();
 
-      console.log(metadataMap($('#title').val()));
-      console.log(metadataMap($('#description').val()));
-      console.log(metadataMap($('#tags').val()));
+    metadata = {
+      snippet: {
+        title: metadataMap($('#title').val()),
+        description: metadataMap($('#description').val()),
+        tags: metadataMap($('#tags').val())
+      },
+      status: {
+        privacyStatus: 'private'
+      }
+    };
 
-      metadata = {
-        snippet: {
-          title: metadataMap($('#title').val()),
-          description: metadataMap($('#description').val()),
-          tags: metadataMap($('#tags').val())
-        },
-        status: {
-          privacyStatus: 'private'
-        }
-      };
-
-      $.ajax({
-        url: '/api/upload_video',
-        data: {
-          snippet: {
-            title: metadataMap($('#title').val()),
-            description: metadataMap($('#description').val()),
-            tags: metadataMap($('#tags').val())
-          },
-          status: {
-            privacyStatus: 'private'
-          }
-        },
-        type: 'POST'
-      }).done(function(resp) {
-        console.log(resp);
-      });
+    $.ajax({
+      url: '/api/upload_video',
+      data: JSON.stringify(metadata),
+      type: 'POST'
+    }).done(function(resp) {
+      console.log(resp);
+    });
   });
 });
