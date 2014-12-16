@@ -12,7 +12,8 @@
     "youtube-api": "^0.3.0",
     "google-auth-cli": "0.0.1",
     "googleapis": "^0.7.0",
-    "statique": "^0.3.0"
+    "statique": "^0.3.0",
+    "node-youtube-resumable-upload": "latest"
   },
   "devDependencies": {},
   "scripts": {
