@@ -1,49 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>YouTube API Editor</title>
-        <script src="/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script src="/ace/ext-language_tools.js"></script>
-        <script src="/js/main.js"></script>
-        <style type="text/css" media="screen">
-            #editor {
-                position: absolute;
-                top: 0;
-                right: 50%;
-                bottom: 0;
-                left: 0;
-            }
+<head>
+<meta charset="UTF-8">
+<title>YouTube API Editor</title>
 
-            #response-editor {
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 50%;
-            }
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="/js/main.js"></script>
 
-            button.run-code-btn {
-                position: absolute;
-                z-index: 10;
-                right: 50%;
-                top: 0;
-                background: rgb(0, 173, 255);
-                border: none;
-                color: white;
-                padding: 10px 37px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-        </style>
-    </head>
-    <body>
-        <button class="run-code-btn">Run Code</button>
-        <div id="editor">Youtube.channels.list({
-    "part": "id",
-    "mySubscribers": true,
-    "maxResults": 50
-}, _CALLBACK);</div>
-        <div id="response-editor">Click the blue button to run the requests.</div>
-    </body>
+<style type="text/css" media="screen">
+form {
+  width: 40%;
+  margin: 0 auto;
+}
+.upload-video-btn {
+  background: rgb(0, 173, 255);
+  border: none;
+  color: white;
+  font-weight: bold;
+  position: relative;
+  z-index: 10;
+  padding: 10px 37px;
+  margin: 20px;
+  cursor: pointer;
+}
+table {
+  width: 60%;
+}
+th {
+  text-align: left;
+}
+</style>
+</head>
+<body>
+<form class="form-horizontal">
+  <fieldset>
+    <h2>Metadata Mapping</h2>
+
+    <!-- The select menus would be populated by getting the values from the object in the manifest file and the labels would be populated by a set of metadata fields that we will allow you to map data to in youtube -->
+    <table>
+      <tr>
+        <th>Youtube fields</th>
+        <th>&gt;</th>
+        <th>Mapping</th>
+      </tr>
+      <tr>
+        <td>
+          <label class="control-label" for="title">Title</label>
+        </td>
+        <td>&gt;</td>
+        <td>
+          <div class="control-group">
+            <div class="controls">
+              <select id="title" name="title" class="input-xlarge">
+                <option selected>name</option>
+                <option>description</option>
+                <option>properties</option>
+                <option>Description</option>
+                <option>customField</option>
+                <option>custom 8</option>
+              </select>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label class="control-label" for="description">Description</label>
+        </td>
+        <td>&gt;</td>
+        <td>
+          <div class="control-group">
+            <div class="controls">
+              <select id="description" name="description" class="input-xlarge">
+                <option>name</option>
+                <option selected>description</option>
+                <option>properties</option>
+                <option>Description</option>
+                <option>customField</option>
+                <option>custom 8</option>
+              </select>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label class="control-label" for="tags">Tags</label>
+        </td>
+        <td>&gt;</td>
+        <td>
+          <div class="control-group">
+            <div class="controls">
+              <select id="tags" name="tags" class="input-xlarge">
+                <option>name</option>
+                <option>description</option>
+                <option selected>properties</option>
+                <option>Description</option>
+                <option>customField</option>
+                <option>custom 8</option>
+              </select>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <button class="upload-video-btn">Upload Video</button>
+  </fieldset>
+</form>
+
+
+</body>
 </html>
