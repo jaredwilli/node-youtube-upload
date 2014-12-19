@@ -66,13 +66,12 @@ Statique
         'Location': authUrl
       });
 
-      res.end();
-
-      return;
+      return res.end();
     },
 
     '/api/upload_video': function(req, res, form) {
       console.log('ACCESS_TOKEN: ', ACCESS_TOKEN);
+
       var metadata = {};
 
       form.on("done", function (form) {
@@ -97,12 +96,14 @@ Statique
         });
         resumableUpload.initUpload(function(result) {
           console.log('Result: ', result);
-          return;
+
+          return res.end(result);
         }, function(error) {
           console.log('Upload failed: ');
           console.log(JSON.stringify(error));
         });
       });
+
 
     },
 

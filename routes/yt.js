@@ -14,49 +14,49 @@ function autenticate() {
   autenticated = true;
 }
 
-function getResponseActivities(options, req, res) {
-  if (!autenticated) {
-    autenticate();
-  }
+// function getResponseActivities(options, req, res) {
+//   if (!autenticated) {
+//     autenticate();
+//   }
 
-  Youtube.activities.list(options, function(err, data) {
-    var response = '';
-    response += 'Error: ' + JSON.stringify(err, null, 4) + '\n';
-    response += 'Data: ' + JSON.stringify(data, null, 4);
-    res.end(response);
-  });
-}
+//   Youtube.activities.list(options, function(err, data) {
+//     var response = '';
+//     response += 'Error: ' + JSON.stringify(err, null, 4) + '\n';
+//     response += 'Data: ' + JSON.stringify(data, null, 4);
+//     res.end(response);
+//   });
+// }
 
-exports.listAllActivities = function(req, res) {
-  var maxResults;
+// exports.listAllActivities = function(req, res) {
+//   var maxResults;
 
-  if (req.params.maxResults) {
-    maxResults = req.params.maxResults;
-  } else {
-    maxResults = 50;
-  }
+//   if (req.params.maxResults) {
+//     maxResults = req.params.maxResults;
+//   } else {
+//     maxResults = 50;
+//   }
 
-  getResponseActivities({
-    'part': 'snippet,contentDetails',
-    'home': true,
-    'maxResults': maxResults
-  }, req, res);
-};
+//   getResponseActivities({
+//     'part': 'snippet,contentDetails',
+//     'home': true,
+//     'maxResults': maxResults
+//   }, req, res);
+// };
 
-exports.listActivitiesAfter = function(req, res) {
-  getResponseActivities({
-    'part': 'snippet,contentDetails',
-    'home': true,
-    'maxResults': 50,
-    'publishedAfter': req.params.date
-  }, req, res);
-};
+// exports.listActivitiesAfter = function(req, res) {
+//   getResponseActivities({
+//     'part': 'snippet,contentDetails',
+//     'home': true,
+//     'maxResults': 50,
+//     'publishedAfter': req.params.date
+//   }, req, res);
+// };
 
-exports.listActivitiesBefore = function(req, res) {
-  getResponseActivities({
-    'part': 'snippet,contentDetails',
-    'home': true,
-    'maxResults': 50,
-    'publishedBefore': req.params.date
-  }, req, res);
-};
+// exports.listActivitiesBefore = function(req, res) {
+//   getResponseActivities({
+//     'part': 'snippet,contentDetails',
+//     'home': true,
+//     'maxResults': 50,
+//     'publishedBefore': req.params.date
+//   }, req, res);
+// };
