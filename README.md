@@ -1,8 +1,5 @@
-# NodeJS Youtube API Test
-Test application that tests Youtube API NodeJS module.
-
-## Screenshot
->![](http://i.imgur.com/2B32IcZ.png)
+# NodeJS Youtube Upload Test
+Test application that tests Youtube Upload API NodeJS module. This was a modification to the [test-youtube-api](http://github.com/IonicaBizau/test-youtube-api) repository.
 
 ## Before you start
 
@@ -25,13 +22,13 @@ provides a simple text representation of arbitrary data structures. For more inf
 2. Download this repository using:
 
  ```
- git clone http://github.com/IonicaBizau/test-youtube-api
+ git clone http://github.com/jaredwilli/node-youtube-upload
  ```
 
 2. Enter in the downloaded directory and run `npm install`:
 
  ```
- cd test-youtube-api
+ cd node-youtube-upload
  npm install
  ```
 
@@ -39,11 +36,11 @@ provides a simple text representation of arbitrary data structures. For more inf
 
 2. Select **`API Access`** option, like in the screen shot:
 
- >![](https://raw.github.com/IonicaBizau/test-youtube-api/master/images/1.png)
+ >![](https://raw.github.com/jaredwilli/node-youtube-upload/master/images/1.png)
 
 2. Then create an **OAuth 2.0 client ID**.
 
- >![](https://raw.github.com/IonicaBizau/test-youtube-api/master/images/2.png)
+ >![](https://raw.github.com/jaredwilli/node-youtube-upload/master/images/2.png)
 
 2. Complete the required fields:
 
