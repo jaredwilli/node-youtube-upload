@@ -1,5 +1,5 @@
 # NodeJS Youtube Upload Test
-Test application that tests Youtube Upload API NodeJS module. This was a modification to the [test-youtube-api](http://github.com/IonicaBizau/test-youtube-api) repository.
+Test application that tests Youtube Upload API NodeJS module. This is a modification of the [test-youtube-api](http://github.com/IonicaBizau/test-youtube-api) repository, and also uses the [node-youtube-resumable-upload](https://github.com/grayleonard/node-youtube-resumable-upload) npm package.
 
 ## Before you start
 
