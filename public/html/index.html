@@ -8,17 +8,24 @@
 <script src="/js/main.js"></script>
 
 <style type="text/css" media="screen">
+body {
+  font-family: arial;
+}
+h2 {
+  padding: 0 0 10px;
+  margin: 0;
+}
 form {
   width: 40%;
   margin: 0 auto;
 }
+.connect-btn,
 .upload-video-btn {
   background: rgb(0, 173, 255);
   border: none;
   color: white;
   font-weight: bold;
   position: relative;
-  z-index: 10;
   padding: 10px 37px;
   margin: 20px;
   cursor: pointer;
@@ -29,9 +36,18 @@ table {
 th {
   text-align: left;
 }
+pre {
+  background: #eee;
+  width: 70%;
+  margin: 10px auto;
+  padding: 10px;
+}
 </style>
 </head>
 <body>
+
+<button class="connect-btn">Connect to Youtube</button>
+
 <form class="form-horizontal">
   <fieldset>
     <h2>Metadata Mapping</h2>
@@ -40,14 +56,14 @@ th {
     <table>
       <tr>
         <th>Youtube fields</th>
-        <th>&gt;</th>
+        <th>--&gt;</th>
         <th>Mapping</th>
       </tr>
       <tr>
         <td>
           <label class="control-label" for="title">Title</label>
         </td>
-        <td>&gt;</td>
+        <td>--&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
@@ -67,7 +83,7 @@ th {
         <td>
           <label class="control-label" for="description">Description</label>
         </td>
-        <td>&gt;</td>
+        <td>--&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
@@ -87,7 +103,7 @@ th {
         <td>
           <label class="control-label" for="tags">Tags</label>
         </td>
-        <td>&gt;</td>
+        <td>--&gt;</td>
         <td>
           <div class="control-group">
             <div class="controls">
@@ -109,6 +125,10 @@ th {
   </fieldset>
 </form>
 
+<pre>
+  <h2>Upload Result</h2>
+  <code></code>
+</pre>
 
 </body>
 </html>
